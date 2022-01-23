@@ -11,7 +11,7 @@ import org.java_websocket.server.WebSocketServer;
 
 import frc.team3128.common.utility.Log;
 import frc.team3128.common.hardware.limelight.*;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class NarwhalDashboard extends WebSocketServer {
@@ -228,6 +228,7 @@ public class NarwhalDashboard extends WebSocketServer {
                 selectedAuto = null;
             } else if (autoPrograms.containsKey(programName)) {
                 selectedAuto = programName;
+                SmartDashboard.putString("Auto", programName);
                 Log.info("NarwhalDashboard", "Selected auto program: \"" + selectedAuto + "\"");
             } else {
                 Log.recoverable("NarwhalDashboard", "Auto program \"" + programName + "\" does not exist.");
