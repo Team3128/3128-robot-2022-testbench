@@ -82,7 +82,7 @@ public class NAR_Drivetrain extends SubsystemBase {
         odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
         field = new Field2d();
 
-        SmartDashboard.putData("Field", field);
+        //SmartDashboard.putData("Field", field);
 
         resetEncoders();
     }
@@ -99,7 +99,7 @@ public class NAR_Drivetrain extends SubsystemBase {
         odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoderDistance(), getRightEncoderDistance());
         field.setRobotPose(getPose());   
         
-        SmartDashboard.putNumber("Gyro", getHeading());
+        //SmartDashboard.putNumber("Gyro", getHeading());
     }
 
     public void simulationPeriodic() {
@@ -120,14 +120,14 @@ public class NAR_Drivetrain extends SubsystemBase {
         rightLeader.setSimPosition(robotDriveSim.getRightPositionMeters() / Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK);
         rightLeader.setSimVelocity(robotDriveSim.getRightVelocityMetersPerSecond()/(Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
 
-        SmartDashboard.putNumber("Left Speed", leftLeader.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("Left Desired Speed", robotDriveSim.getLeftVelocityMetersPerSecond() / (Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
+        //SmartDashboard.putNumber("Left Speed", leftLeader.getSelectedSensorVelocity());
+        //SmartDashboard.putNumber("Left Desired Speed", robotDriveSim.getLeftVelocityMetersPerSecond() / (Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
         
         // TODO: Abstractify gyro
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         angle.set(robotDriveSim.getHeading().getDegrees()); // @Nathan: I tested this out, this seems to work. This preserves parity w/ the real robot in angle, odometry
-        SmartDashboard.putNumber("Sim Gyro", angle.get());
+        //SmartDashboard.putNumber("Sim Gyro", angle.get());
     }
         
     public double getHeading() {

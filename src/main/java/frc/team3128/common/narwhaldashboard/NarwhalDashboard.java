@@ -22,7 +22,7 @@ public class NarwhalDashboard extends WebSocketServer {
         return UPDATE_WAVELENGTH;
     }
 
-    private static HashMap<String, String> data = new HashMap<String, String>();
+    private static HashMap<String, String> debugValues = new HashMap<String, String>();
     private static LinkedHashMap<String, Command> autoPrograms = new LinkedHashMap<String, Command>();
 
     private static HashMap<String, DashButtonCallback> buttons = new HashMap<String, DashButtonCallback>();
@@ -60,7 +60,7 @@ public class NarwhalDashboard extends WebSocketServer {
      * Publishes a string value to NarwhalDashboard
      */
     public static void put(String key, String value) {
-        data.put(key, value);
+        debugValues.put(key, value);
     }
 
     public static void addButton(String key, DashButtonCallback callback) {
@@ -144,9 +144,17 @@ public class NarwhalDashboard extends WebSocketServer {
             while (conn.isOpen()) {
                 String jsonString = "{";
 
-                for (String key : data.keySet()) {
-                    jsonString += "\"" + key + "\":\"" + data.get(key) + "\",";
+                jsonString += "\"debug\": [";
+
+                for (String key : debugValues.keySet()) {
+                    jsonString += String.format("{\"key\": \"%s\", \"value\": \"%s\"},", key, debugValues.get(key));
                 }
+                
+                //SmartDashboard.putBoolean("test", debugValues.isEmpty());
+
+                if (!debugValues.isEmpty())
+                    jsonString = jsonString.substring(0, jsonString.length() - 1);
+                jsonString += "],";
 
                 jsonString += "\"selected_auto\":\"" + selectedAuto + "\",";
 
@@ -155,6 +163,7 @@ public class NarwhalDashboard extends WebSocketServer {
                 if(selectedLimelight != null)
                     jsonString += ",\"selected_pipeline\":\""+limelights.get(selectedLimelight).getSelectedPipeline()+"\"";
 
+               
                 // jsonString += "\"buttons\":[";
                 // for (String buttonName : buttons.keySet()) {
                 // jsonString += "\"" + buttonName + "\",";
@@ -170,18 +179,19 @@ public class NarwhalDashboard extends WebSocketServer {
                     }
                     if (!autoPrograms.isEmpty())
                         jsonString = jsonString.substring(0, jsonString.length() - 1);
-                    jsonString += "]";
+                    jsonString += "],";
 
-                    jsonString += ",\"limelights\": [";
+                    jsonString += "\"limelights\": [";
 
                     for(Limelight lime : limelights.values()) {
                         jsonString += "\""+lime.hostname+"\",";
                     }
-                    jsonString = jsonString.substring(0, jsonString.length()-1);
 
-                    jsonString += "]";
+                    if (!limelights.isEmpty())
+                        jsonString = jsonString.substring(0, jsonString.length() - 1);
+                    jsonString += "],";
 
-                    jsonString += ", \"limelightsOptions\": [";
+                    jsonString += "\"limelightsOptions\": [";
 
                     for(Pipeline pipeline : Pipeline.values()) {
                         jsonString += "\""+pipeline.toString()+"\",";
@@ -195,6 +205,8 @@ public class NarwhalDashboard extends WebSocketServer {
                 }
 
                 jsonString += "}";
+
+                SmartDashboard.putString("json", jsonString);
 
                 conn.send(jsonString);
                 

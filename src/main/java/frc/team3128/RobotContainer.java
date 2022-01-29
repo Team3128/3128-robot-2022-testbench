@@ -53,7 +53,7 @@ public class RobotContainer {
         testBenchMotor = new TestBenchMotor(); 
         //m_commandScheduler.setDefaultCommand(testBenchSubsystem, new TestDrive(testBenchSubsystem));
 
-        lime = new Limelight("limelight-pog", 0, 0, 0, 0);
+        lime = new Limelight("limelight-bog", 0, 0, 0, 0);
 
         configureButtonBindings();
         dashboardInit();
@@ -84,9 +84,10 @@ public class RobotContainer {
 
     private void dashboardInit() {
         if (DEBUG) {
-            SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
+            //SmartDashboard.putData("CommandScheduler", CommandScheduler.getInstance());
             //SmartDashboard.putData("Drivetrain", m_drive);
         }
+        NarwhalDashboard.put("Test", "pog");
         NarwhalDashboard.startServer();
         setupLimelights(lime);           
     }
