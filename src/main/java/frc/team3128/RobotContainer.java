@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.team3128.commands.ArcadeDrive;
+import frc.team3128.commands.TestCmd;
 //import frc.team3128.commands.TestDrive;
-import frc.team3128.common.hardware.input.NAR_Joystick;
-import frc.team3128.subsystems.NAR_Drivetrain;
-import frc.team3128.subsystems.TestBenchPiston;
+import frc.team3128.hardware.input.NAR_Joystick;
 import frc.team3128.subsystems.TestBenchMotor;
+import frc.team3128.subsystems.TestBenchPiston;
+import frc.team3128.utility.Log;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -21,10 +21,9 @@ import frc.team3128.subsystems.TestBenchMotor;
 public class RobotContainer {
 
     //private NAR_Drivetrain m_drive;
-    private TestBenchMotor testBenchMotor;
-    private TestBenchPiston testBenchPiston;
-    private NAR_Joystick m_leftStick;
     private NAR_Joystick m_rightStick;
+
+    private TestBenchMotor motor;
 
     private CommandScheduler m_commandScheduler = CommandScheduler.getInstance();
     private Command auto;
@@ -34,28 +33,19 @@ public class RobotContainer {
     public RobotContainer() {
 
         //m_drive = NAR_Drivetrain.getInstance();
+        motor = new TestBenchMotor();
 
         //Enable all PIDSubsystems so that useOutput runs
 
-        m_leftStick = new NAR_Joystick(0);
         m_rightStick = new NAR_Joystick(1);
-        testBenchPiston = new TestBenchPiston();
-        testBenchMotor = new TestBenchMotor(); 
-        //m_commandScheduler.setDefaultCommand(testBenchSubsystem, new TestDrive(testBenchSubsystem));
+        m_commandScheduler.setDefaultCommand(motor, new TestCmd(motor, m_rightStick::getY));
 
         configureButtonBindings();
         dashboardInit();
     }   
 
     private void configureButtonBindings() {
-        m_rightStick.getButton(1).whenActive(new RunCommand(testBenchMotor::run,testBenchMotor));
-        m_rightStick.getButton(1).whenReleased(new RunCommand(testBenchMotor::stop,testBenchMotor));
-
-        m_rightStick.getButton(8).whenActive(new RunCommand(testBenchPiston::eject,testBenchPiston));
-        m_rightStick.getButton(8).whenReleased(new RunCommand(testBenchPiston::off,testBenchPiston));
-
-        m_rightStick.getButton(10).whenActive(new RunCommand(testBenchPiston::retract,testBenchPiston)); 
-        m_rightStick.getButton(10).whenReleased(new RunCommand(testBenchPiston::off,testBenchPiston));
+        Log.info("Configuring button bindings", "called method lets goooo");
     }
 
     private void dashboardInit() {

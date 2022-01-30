@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team3128.Constants;
 import frc.team3128.Robot;
-import frc.team3128.common.NAR_EMotor;
-import frc.team3128.common.hardware.motor.NAR_TalonFX;
+import frc.team3128.hardware.motorcontroller.NAR_TalonFX;
+import frc.team3128.infrastructure.NAR_EMotor;
 
 public class NAR_Drivetrain extends SubsystemBase {
 
@@ -64,8 +64,8 @@ public class NAR_Drivetrain extends SubsystemBase {
         rightFollower.setInverted(true);
 
         robotDrive = new DifferentialDrive(
-            new MotorControllerGroup(leftLeader.getMotor(), leftFollower.getMotor()),
-            new MotorControllerGroup(rightLeader.getMotor(), rightFollower.getMotor()));
+            new MotorControllerGroup(leftLeader, leftFollower),
+            new MotorControllerGroup(rightLeader, rightFollower));
 
         if(Robot.isSimulation()){
             robotDriveSim =
@@ -114,10 +114,10 @@ public class NAR_Drivetrain extends SubsystemBase {
         robotDriveSim.update(0.02);
 
         // Store simulated motor states
-        leftLeader.setQuadSimPosition(robotDriveSim.getLeftPositionMeters() / Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK);
-        leftLeader.setQuadSimVelocity(robotDriveSim.getLeftVelocityMetersPerSecond()/(Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
-        rightLeader.setQuadSimPosition(robotDriveSim.getRightPositionMeters() / Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK);
-        rightLeader.setQuadSimVelocity(robotDriveSim.getRightVelocityMetersPerSecond()/(Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
+        leftLeader.setSimPosition(robotDriveSim.getLeftPositionMeters() / Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK);
+        leftLeader.setSimVelocity(robotDriveSim.getLeftVelocityMetersPerSecond()/(Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
+        rightLeader.setSimPosition(robotDriveSim.getRightPositionMeters() / Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK);
+        rightLeader.setSimVelocity(robotDriveSim.getRightVelocityMetersPerSecond()/(Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
 
         SmartDashboard.putNumber("Left Speed", leftLeader.getSelectedSensorVelocity());
         SmartDashboard.putNumber("Left Desired Speed", robotDriveSim.getLeftVelocityMetersPerSecond() / (Constants.DriveConstants.ENCODER_DISTANCE_PER_MARK * 10));
